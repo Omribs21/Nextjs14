@@ -55,9 +55,4 @@ export const formatAndDivideNumber = (num: number):string => {
   }else{
     return num.toString();
   }
-
-
-
-
-
 }
