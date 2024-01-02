@@ -1,6 +1,7 @@
 "use client";
 import { downvoteAnswer, upvoteAnswer } from "@/lib/actions/answer.action";
 import { downvoteQuestion, upvoteQuestion } from "@/lib/actions/question.action";
+import { ToggleSaveQuestion } from "@/lib/actions/user.action";
 import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 // eslint-disable-next-line no-unused-vars
@@ -31,8 +32,12 @@ const Votes = ({
     const pathname = usePathname()
     // const router = useRouter()
 
-    const handleSave = () => {
-
+    // save a question with the star icon
+    const handleSave = async () => {
+        await ToggleSaveQuestion({
+           userId : JSON.parse(userId),
+           questionId:JSON.parse(itemId),
+          path:pathname})
     }
 
     const handleVote = async (action:string) => {
