@@ -8,7 +8,7 @@ export const connectToDatabase = async () => {
   if (!process.env.MONGODB_URL) return console.log("missing mongodb url");
 
   if (isConnected) {
-    console.log("mongo db is already connected");
+    return;
   }
 
   try {
