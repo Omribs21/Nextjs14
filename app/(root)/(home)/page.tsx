@@ -8,12 +8,8 @@ import { HomePageFilters } from "@/constants/filters";
 import Link from "next/link";
 import { getQuestions } from "@/lib/actions/question.action";
 
-
 export default async function Home() {
-
   const result = await getQuestions({});
-
-  console.log(result.questions)
 
   return (
     <>
@@ -25,6 +21,7 @@ export default async function Home() {
           </Button>
         </Link>
       </div>
+      {console.log(result)}
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
           route="/"
@@ -43,6 +40,7 @@ export default async function Home() {
       <div className="mt-10 flex w-full flex-col gap-6">
         {result.questions.length > 0 ? (
           result.questions.map((question) => (
+          
             <QuestionCard
               key={question._id}
               _id={question._id}
@@ -54,6 +52,7 @@ export default async function Home() {
               answers={question.answers}
               createdAt={question.createdAt}
             />
+           
           ))
         ) : (
           <NoResult

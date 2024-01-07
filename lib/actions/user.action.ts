@@ -200,46 +200,47 @@ export async function getUserInfo(params: GetUserByIdParams) {
   }
 }
 
-export async function getUserQuestions(params:GetUserStatsParams){
+export async function getUserQuestions(params: GetUserStatsParams) {
   try {
     connectToDatabase();
-    
-    const {userId,page=1,pageSize=10} =params
+
+    // eslint-disable-next-line no-unused-vars
+    const { userId, page = 1, pageSize = 10 } = params;
 
     // returns a count of how many questions there are.
-    const totalQuestions = await Question.countDocuments({author:userId})
+    const totalQuestions = await Question.countDocuments({ author: userId });
     // returnes only the questions of that specific user
-    const userQuestions = await Question.find({author:userId})
-    .sort({views:-1, upvotes:-1})
-    .populate('tags', '_id name')
-    .populate('author', '_id name clerekId picture')
+    const userQuestions = await Question.find({ author: userId })
+      .sort({ views: -1, upvotes: -1 })
+      .populate("tags", "_id name")
+      .populate("author", "_id name clerkId picture");
 
-
-    return {totalQuestions,questions:userQuestions}
+    return { totalQuestions, questions: userQuestions };
   } catch (error) {
-    console.log(error)
+    console.log(error);
     throw error;
   }
 }
 
-export async function getUserAnswers(params:GetUserStatsParams){
+export async function getUserAnswers(params: GetUserStatsParams) {
   try {
     connectToDatabase();
-    
-    const {userId,page=1,pageSize=10} =params
+
+    // eslint-disable-next-line no-unused-vars
+    const { userId, page = 1, pageSize = 10 } = params;
 
     // returns a count of how many questions there are.
-    const totalAnswers = await Answer.countDocuments({author:userId})
+    const totalAnswers = await Answer.countDocuments({ author: userId });
     // returnes only the Answers of that specific user
-    const userAnswers = await Answer.find({author:userId})
-    .sort({ upvotes:-1})
-    .populate('question','_id title')
-    .populate('author', '_id name clerekId picture')
+    const userAnswers = await Answer.find({ author: userId })
+      .sort({ upvotes: -1 })
+      .populate("question", "_id title")
+      .populate("author", "_id name clerkId picture");
 
-
-    return {totalAnswers,answers:userAnswers}
+    return { totalAnswers, answers: userAnswers };
   } catch (error) {
-    console.log(error)
+    console.log(error);
     throw error;
   }
 }
+

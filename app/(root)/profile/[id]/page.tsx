@@ -10,13 +10,13 @@ import ProfileLink from "@/components/shared/ProfileLink";
 import Stats from "@/components/shared/Stats";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswersTab from "@/components/shared/AnswersTab";
+import { URLProps } from "@/types";
 
-const Page = async ({ params, searchParams }) => {
+const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
 
-  console.log("params");
   const userInfo = await getUserInfo({
-    userId: params._id,
+    userId: params.id,
   });
   return (
     <>
@@ -65,7 +65,7 @@ const Page = async ({ params, searchParams }) => {
         </div>
         <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
           <SignedIn>
-            {clerkId === userInfo.user.clrekId && (
+            {clerkId === userInfo.user.clerkId && (
               <Link href="/profile/edit">
                 <Button
                   className="paragraph-medium btn-secondary text-dark300_light900 min-h-[46px] min-w-[175px]
@@ -93,7 +93,10 @@ const Page = async ({ params, searchParams }) => {
                 AnswersTab
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="top-posts" className="mt-5 flex w-full p-4 flex-col gap-6" >
+            <TabsContent
+              value="top-posts"
+              className="mt-5 flex w-full flex-col gap-6 p-4"
+            >
               <QuestionTab
                 searchParams={searchParams}
                 userId={userInfo.user._id}
@@ -101,11 +104,11 @@ const Page = async ({ params, searchParams }) => {
               />
             </TabsContent>
             <TabsContent value="answers" className="flex w-full flex-col gap-6">
-                <AnswersTab
+              <AnswersTab
                 searchParams={searchParams}
                 userId={userInfo.user._id}
                 clerkId={clerkId}
-                />
+              />
             </TabsContent>
           </Tabs>
         </Tabs>

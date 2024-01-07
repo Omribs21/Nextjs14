@@ -7,10 +7,14 @@ import User from "../database/user.model";
 import { connectToDatabase } from "../mongoose";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
 } from "./shared.typs";
+import Answer from "../database/answer.model";
+import Interaction from "../database/interaction.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -21,6 +25,7 @@ export async function getQuestions(params: GetQuestionsParams) {
       .populate({ path: "author", model: User })
       .sort({ createdAt: -1 });
 
+    console.log(questions);
     return { questions };
   } catch (error) {
     console.log(error);
@@ -149,4 +154,40 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
   }
 }
 
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    connectToDatabase();
+    const { questionId, path } = params;
+    await Question.deleteOne({ _id: questionId });
+    await Answer.deleteOne({ question: questionId });
+    await Interaction.deleteOne({ question: questionId });
+    await Tag.updateMany(
+      { questions: questionId },
+      { $pull: { questions: questionId } }
+    );
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    connectToDatabase();
+
+    // eslint-disable-next-line no-unused-vars
+    const { questionId, title, content, tags, path } = params;
+    const question = await Question.findById(questionId).populate("tags");
+
+    if (!question) throw new Error("No Question was foudn");
+
+    question.title = title;
+    question.content = content;
+    await question.save();
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
