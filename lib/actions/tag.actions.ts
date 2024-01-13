@@ -9,6 +9,7 @@ import {
   GetQuestionsByTagIdParams,
   GetTopInteractedTagsParams,
 } from "./shared.typs";
+import { Tags } from "lucide-react";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -36,7 +37,13 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
 export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
-    const tags = await Tag.find({});
+    const { searchQuery } = params;
+    const query: FilterQuery<typeof Tags> = {};
+
+    if (searchQuery) {
+      query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
+    }
+    const tags = await Tag.find(query);
 
     return { tags };
   } catch (error) {
@@ -87,11 +94,11 @@ export async function getTopPopularTags() {
     connectToDatabase();
 
     const popularTags = await Tag.aggregate([
-      {$project:{name:1,numberOfQuestions:{$size:"$questions"}}},
-      {$sort:{numberOfQuestions:-1}},
-      {$limit:5}
-    ])
-    return popularTags ;
+      { $project: { name: 1, numberOfQuestions: { $size: "$questions" } } },
+      { $sort: { numberOfQuestions: -1 } },
+      { $limit: 5 },
+    ]);
+    return popularTags;
   } catch (error) {
     console.log(error);
     throw error;
