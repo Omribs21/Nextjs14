@@ -12,7 +12,9 @@ import { SearchParamsProps } from "@/types";
 export default async function Home({searchParams}:SearchParamsProps) {
   const result = await getQuestions({
     searchQuery:searchParams.q,
+    filter:searchParams.filter,
   });
+  // fetch recommended
 
   return (
     <>
@@ -24,7 +26,6 @@ export default async function Home({searchParams}:SearchParamsProps) {
           </Button>
         </Link>
       </div>
-      {console.log(result)}
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
           route="/"
