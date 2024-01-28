@@ -32,8 +32,11 @@ const Page = async ({ params, searchParams }: URLProps) => {
               key={question._id}
               _id={question._id}
               title={question.title}
+              // @ts-ignore
               tags={question.tags}
+              // @ts-ignore
               author={question.author}
+              // @ts-ignore
               upvotes={question.upvotes}
               views={question.views}
               answers={question.answers}
