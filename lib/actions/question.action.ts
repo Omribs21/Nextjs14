@@ -216,7 +216,7 @@ export async function editQuestion(params: EditQuestionParams) {
     connectToDatabase();
 
     // eslint-disable-next-line no-unused-vars
-    const { questionId, title, content, tags, path } = params;
+    const { questionId, title, content,  path } = params;
     const question = await Question.findById(questionId).populate("tags");
 
     if (!question) throw new Error("No Question was foudn");
