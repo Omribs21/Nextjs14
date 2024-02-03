@@ -11,6 +11,7 @@ import {
 } from "./shared.typs";
 import Answer from "../database/answer.model";
 import Interaction from "../database/interaction.model";
+import User from "../database/user.model";
 
 export async function createAnswer(params: CreateAnswerParams) {
   try {
@@ -25,11 +26,21 @@ export async function createAnswer(params: CreateAnswerParams) {
     });
 
     // add the answer to the question's answer array
-    await Question.findByIdAndUpdate(question, {
+    const questionObject = await Question.findByIdAndUpdate(question, {
       $push: { answers: newAnswer._id },
     });
 
     // todo: add interaction...
+    await Interaction.create({
+      user:author,
+      question,
+      action: 'answer',
+      answer: newAnswer._id,
+      tags: questionObject.tags,
+    })
+
+    // increment author's reputation
+    await User.findByIdAndUpdate(author,{$inc:{reputation:10}})
 
     revalidatePath(path);
   } catch (error) {
@@ -104,6 +115,15 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
     if (!answer) {
       throw new Error("Answer not found");
     }
+    // increment authors reputation by +1/-1 for upvoting/revoking an upvote to the answer
+    await User.findByIdAndUpdate(userId,{
+      $inc: {reputation :hasupVoted ? -2 :2}
+    })
+
+    // increment authors reputation by 10/-10 for recieng an upvote to the answer 
+    await User.findOneAndUpdate(answer.author, {
+      $inc:{reputation : hasupVoted ? -10 : 10}
+    })
 
     revalidatePath(path);
   } catch (error) {
@@ -137,6 +157,16 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
     if (!answer) {
       throw new Error("Answer not found");
     }
+      // increment authors reputation by +1/-1 for upvoting/revoking an upvote to the answer
+      await User.findByIdAndUpdate(userId,{
+        $inc: {reputation :hasdownVoted ? -2 :2}
+      })
+  
+      // increment authors reputation by 10/-10 for recieng an upvote to the answer 
+      await User.findOneAndUpdate(answer.author, {
+        $inc:{reputation : hasdownVoted ? -10 : 10}
+      })
+  
 
     revalidatePath(path);
   } catch (error) {

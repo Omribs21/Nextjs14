@@ -1,4 +1,5 @@
 import { formatAndDivideNumber } from "@/lib/utils";
+import { BadgeCounts } from "@/types";
 import Image from "next/image";
 import React from "react";
 
@@ -6,6 +7,7 @@ interface StatsCardProps {
   imgUrl: string;
   title: string;
   value: number;
+  
 }
 
 const StatsCard = ({ imgUrl, title, value }: StatsCardProps) => {
@@ -29,12 +31,14 @@ const StatsCard = ({ imgUrl, title, value }: StatsCardProps) => {
 interface Props {
   totalQuestions: number;
   totalAnswers: number;
+  badges:BadgeCounts,
+  reputation: number;
 }
 
-const Stats = ({ totalQuestions, totalAnswers }: Props) => {
+const Stats = ({ totalQuestions, totalAnswers, badges,reputation }: Props) => {
   return (
     <div className="mt-10 ">
-      <h4 className="h3-semibold text-dark200_light900">Stats</h4>
+      <h4 className="h3-semibold text-dark200_light900">Stats - {reputation}</h4>
 
       <div
         className="mt-5 grid grid-cols-1 gap-5 xs:grid-cols-2
@@ -59,17 +63,17 @@ const Stats = ({ totalQuestions, totalAnswers }: Props) => {
         </div>
         <StatsCard
           imgUrl="/assets/icons/gold-medal.svg"
-          value={0}
+          value={badges.GOLD}
           title="Gold Badges"
         />
         <StatsCard
           imgUrl="/assets/icons/silver-medal.svg"
-          value={0}
+          value={badges.SILVER}
           title="Silver Badges"
         />
         <StatsCard
           imgUrl="/assets/icons/bronze-medal.svg"
-          value={0}
+          value={badges.BRONZE}
           title="Bronze Badges"
         />
       </div>

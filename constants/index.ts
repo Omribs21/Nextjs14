@@ -46,7 +46,7 @@ export const sidebarLinks: SidebarLink[] = [
 ]
   
 
-export const BADGE_CRITERIA = {
+export const BADGE_CRITERIA :any = {
   QUESTION_COUNT: {
     BRONZE: 10,
     SILVER: 50,

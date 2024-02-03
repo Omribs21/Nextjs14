@@ -101,10 +101,19 @@ export async function createQuestion(params: CreateQuestionParams) {
     });
 
     // create an interaction record for the users ask_question action
+    await Interaction.create({
+      user:author,
+      question: question._id,
+      action: 'ask_question',
+      tags:tagDocuments
+    })
     // increment author's reputation
+    await User.findByIdAndUpdate(author,{$inc:{reputation:5}})
 
     revalidatePath(path);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
@@ -153,6 +162,16 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
       throw new Error("question not found");
     }
 
+    // increment authors reputation by +1/-1 for upvoting/revoking an upvote to the question
+    await User.findByIdAndUpdate(userId,{
+      $inc: {reputation :hasupVoted ? -1 :1}
+    })
+
+    // increment authors reputation by 10/-10 for recieng an upvote to the question 
+    await User.findOneAndUpdate(question.author, {
+      $inc:{reputation : hasupVoted ? -10 : 10}
+    })
+
     revalidatePath(path);
   } catch (error) {
     console.log(error);
@@ -185,6 +204,19 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
     if (!question) {
       throw new Error("question not found");
     }
+
+      // increment authors reputation by +1/-1 for upvoting/revoking an upvote to the question
+      await User.findByIdAndUpdate(userId,{
+        $inc: {reputation :hasdownVoted ? -1 :1}
+      })
+  
+      // increment authors reputation by 10/-10 for recieng an upvote to the question 
+      await User.findOneAndUpdate(question.author, {
+        $inc:{reputation : hasdownVoted ? -10 : 10}
+      })
+    
+
+    
 
     revalidatePath(path);
   } catch (error) {
