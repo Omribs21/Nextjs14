@@ -8,6 +8,7 @@ import type { Metadata } from "next/types";
 import "./globals.css";
 import "../styles/prism.css"
 import { ThemeProvider } from "@/context/ThemeProvider";
+import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -46,6 +47,7 @@ export default function RootLayout({
         >
           <ThemeProvider>{children}</ThemeProvider>
         </ClerkProvider>
+        <Toaster/>
       </body>
     </html>
   );
